@@ -46,20 +46,10 @@ const deleteAnswer = async (id) => {
     }
 };
 
-const acceptAnswer = async (answerId) => {
-    try {
-        const answer = await answerModel.findByIdAndUpdate(answerId, { accepted: true }, { new: true });
-        return answer;
-    } catch (error) {
-        throw new Error('Chyba pri označovaní odpovede ako prijatú: ' + error.message);
-    }
-};
-
 module.exports = {
     getAnswerById,
     createAnswer,
     updateAnswer,
     deleteAnswer,
-    acceptAnswer,
     getAllAnswers
 };

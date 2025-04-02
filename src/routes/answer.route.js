@@ -7,6 +7,5 @@ router.get('/getAll', answerController.getAllAnswersController);
 router.get('/:Qid/:Aid', answerController.getAnswersController);
 router.put('/:id', answerController.updateAnswerController);
 router.delete('/:id', answerController.deleteAnswerController);
-router.put('/accept/:id', answerController.acceptAnswerController);
 
 module.exports = router;

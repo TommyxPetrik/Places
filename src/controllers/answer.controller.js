@@ -6,8 +6,8 @@ const userRepository = require("../../src/repository/user.repository");
 const createAnswerController = async (req, res) => {
     try {
         const answer = await createAnswer(req.body);
-        await userRepository.updateUserKarma(req.query.userid)
-        await questionRepository.updateQestions(req.body.question, answer.id, req.query.userid);
+        await userRepository.updateUserKarma(req.query.userid);
+        questionRepository.updateQuestionsAnswers(req.body.question);
         res.status(201).json(answer);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -17,6 +17,9 @@ const createAnswerController = async (req, res) => {
 const getAllAnswersController = async (req, res) => {
     try {
         const answers = await getAllAnswers();
+        if (!answers || answers.length === 0) {
+            return res.status(400).json("Neboli nájdené žiadne odpovede");
+        }
         res.status(201).json(answers)
     } catch (error) {
         console.error('Chyba pri získavaní odpovedí:', error.message);
@@ -58,20 +61,10 @@ const deleteAnswerController = async (req, res) => {
     }
 };
 
-const acceptAnswerController = async (req, res) => {
-    try {
-        const acceptedAnswer = await acceptAnswer(req.params.id);
-        res.status(200).json(acceptedAnswer);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
 module.exports = {
     createAnswerController,
     getAnswersController,
     updateAnswerController,
     deleteAnswerController,
-    acceptAnswerController,
     getAllAnswersController
 };

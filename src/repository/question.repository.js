@@ -3,7 +3,7 @@ const userModel = require("../models/user.model");
 
 const getAllQuestions = async() => {
     try {
-        const questions = await questionModel.find().populate("userid").populate("answers").populate({path: "userid",populate: { path: "subplaces", select: "name" }});
+        const questions = await questionModel.find().populate("answers","title").populate({path: "userid", populate: { path: "subplaces", select: "name" }});
         return questions;
     } catch (error) {
         throw new Error("Chyba pri získavaní otkázky: " + error.message);
@@ -46,6 +46,17 @@ const deleteQuestion = async (id) => {
     }
 };
 
+const updateQuestionsAnswers = async (questionId, answerid) => {
+    try {
+        const question = await questionModel.findByIdAndUpdate(questionId, {$addToSet: {answers: answerid}});
+        if (!question) {
+            throw new Error('Otázka nenájdená');
+        }
+    } catch (error) {
+        throw new Error('Chyba pri aktualizácii otázky: ' + error.message);
+    }
+};
+
 
 module.exports = {
     getQuestionById,
@@ -53,5 +64,6 @@ module.exports = {
     updateQuestion,
     deleteQuestion,
     getAllQuestions,
+    updateQuestionsAnswers
 
 };
