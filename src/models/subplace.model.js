@@ -14,11 +14,13 @@ const subplaceSchema = new mongoose.Schema({
 
 subplaceSchema.post("findOneAndUpdate", async function (doc) {
     if (doc) {
-        const membersCount = doc.membersids.length;
-        const questionsCount = doc.questions.length;
-        await doc.updateOne({ members: membersCount, questionCount: questionsCount });
+        const updatedSubplace = await mongoose.model("Subplace").findById(doc._id).populate("questions");
+        const membersCount = updatedSubplace.membersids.length;
+        const questionsCount = updatedSubplace.questions.length;
+        await updatedSubplace.updateOne({ members: membersCount, questionsCount: questionsCount });
     }
 });
+
 
 const SubplaceModel = mongoose.model("Subplace", subplaceSchema);
 module.exports = SubplaceModel;

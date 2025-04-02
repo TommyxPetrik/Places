@@ -3,7 +3,7 @@ const userModel = require("../models/user.model");
 
 const getAllQuestions = async() => {
     try {
-        const questions = await questionModel.find().populate("userid").populate("answers");
+        const questions = await questionModel.find().populate("userid").populate("answers").populate({path: "userid",populate: { path: "subplaces", select: "name" }});
         return questions;
     } catch (error) {
         throw new Error("Chyba pri získavaní otkázky: " + error.message);
