@@ -57,6 +57,27 @@ const updateQuestionsAnswers = async (questionId, answerid) => {
     }
 };
 
+const upvoteQuestion = async (questionId) => {
+    try {
+        const question = await questionModel.findByIdAndUpdate(questionId, { $inc: { upvotes: 1 } }, { new: true });
+        if (!question) {
+            throw new Error('Otázka neexistuje alebo bola odstránená.');
+        }
+    } catch (error) {
+        throw new Error('Chyba pri upvote otázky: ' + error.message);
+        
+    }
+};
+
+const downvoteQuestion = async (questionId) => {
+    try {
+        const question = await questionModel.findByIdAndUpdate(questionId, { $inc: { upvotes: -1 } }, { new: true });
+    } catch (error) {
+        throw new Error('Chyba pri downvote otázky: ' + error.message);
+        
+    }
+};
+
 
 module.exports = {
     getQuestionById,
@@ -64,6 +85,8 @@ module.exports = {
     updateQuestion,
     deleteQuestion,
     getAllQuestions,
-    updateQuestionsAnswers
+    updateQuestionsAnswers,
+    upvoteQuestion,
+    downvoteQuestion,
 
 };

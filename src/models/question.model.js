@@ -10,7 +10,6 @@ const questionSchema = new Schema({
     answerCount: { type: Number, default: 0 }, 
     views: { type: Number, default: 0 },
     upvotes: { type: Number, default: 0 },
-    downvotes: { type: Number, default: 0 },
     subplace: { type: mongoose.Schema.Types.ObjectId, ref: "Subplace", required: true },
     tags: [{ type: String }], 
 }, { timestamps: true });

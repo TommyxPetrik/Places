@@ -47,10 +47,38 @@ const deleteAnswer = async (answerId) => {
     }
 };
 
+const upvoteAnswer = async (answerId) => {
+    try {
+        const answer = await answerModel.findOneAndUpdate(answerId,{$inc: { upvotes: 1 }}, { new: true });
+        if (!answer) {
+            throw new Error('Odpoveď neexistuje alebo bola odstránená.');
+        }
+
+    } catch (error) {
+        throw new Error('Chyba pri upvote odpovede: ' + error.message);
+        
+    }
+};
+
+const downvoteAnswer = async (answerId) => {
+    try {
+        const answer = await answerModel.findOneAndUpdate(answerId,{$inc: { upvotes: -1 }}, { new: true });
+        if (!answer) {
+            throw new Error('Odpoveď neexistuje alebo bola odstránená.');
+        }
+
+    } catch (error) {
+        throw new Error('Chyba pri downvote odpovede: ' + error.message);
+        
+    }
+};
+
 module.exports = {
     getAnswerById,
     createAnswer,
     updateAnswer,
     deleteAnswer,
-    getAllAnswers
+    getAllAnswers,
+    upvoteAnswer,
+    downvoteAnswer,
 };

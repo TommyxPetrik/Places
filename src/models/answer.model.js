@@ -10,7 +10,6 @@ const answerSchema = new Schema(
         parentAnswer: { type: mongoose.Schema.Types.ObjectId, ref: "Answer", default: null },
         replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Answer" }],
         upvotes: { type: Number, default: 0 },
-        downvotes: { type: Number, default: 0 },
     },
     { timestamps: true }
 );
