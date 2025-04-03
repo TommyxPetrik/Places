@@ -17,8 +17,9 @@ const questionSchema = new Schema({
 
 questionSchema.post("findOneAndUpdate", async function (doc) {
     if (doc) {
-        const answersCount = doc.answers.length;
-        await doc.updateOne({ answerCount: answersCount });
+        const updatedQuestion = await mongoose.model("Question").findById(doc._id).populate("answers")
+        const answersCount = updatedQuestion.answers.length;
+        await updatedQuestion.updateOne({ answerCount: answersCount });
     }
 });
 

@@ -10,9 +10,9 @@ const createAnswer = async (answerData) => {
     }
 };
 
-const getAnswerById = async (Qid, Aid) => {
+const getAnswerById = async (answerId) => {
     try {
-        const answer = await answerModel.findOne({ _id: Aid, question: Qid }).populate('userid');
+        const answer = await answerModel.findById(answerId).populate('userid',"name");
         return answer;
     } catch (error) {
         throw new Error('Chyba pri získavaní odpovede pre otázku: ' + error.message);
@@ -22,7 +22,7 @@ const getAnswerById = async (Qid, Aid) => {
 
 const getAllAnswers = async () => {
     try {
-        const answers = await answerModel.find().populate("userid").populate("question");
+        const answers = await answerModel.find().populate("userid").populate("question", "title").populate({path: "userid", populate: { path: "subplaces", select: "name" }});
         return answers;
     } catch (error) {
         throw new Error("Chyba pri získavaní odpovede: " + error.message);
@@ -38,9 +38,10 @@ const updateAnswer = async (id, answerData) => {
     }
 };
 
-const deleteAnswer = async (id) => {
+const deleteAnswer = async (answerId) => {
     try {
-        await answerModel.findByIdAndDelete(id);
+        const deleted = await answerModel.findByIdAndDelete(answerId);
+        return true;
     } catch (error) {
         throw new Error('Chyba pri mazaní odpovede: ' + error.message);
     }

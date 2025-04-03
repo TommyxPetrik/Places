@@ -1,13 +1,15 @@
 const { createAnswer, getAnswersByQuestionId, updateAnswer, deleteAnswer, acceptAnswer, getAllAnswers } = require("./../repository/answer.repository");
 const { getAll } = require("./question.controller");
+const answerRepository = require("./../repository/answer.repository");
 const questionRepository = require("./../repository/question.repository");
 const userRepository = require("../../src/repository/user.repository");
 
 const createAnswerController = async (req, res) => {
     try {
-        const answer = await createAnswer(req.body);
-        await userRepository.updateUserKarma(req.query.userid);
-        questionRepository.updateQuestionsAnswers(req.body.question);
+        const newAnswer = {...req.body, userid: req.user.userid, username: req.user.username }
+        const answer =  await createAnswer(newAnswer);
+        await userRepository.updateUserKarma(req.user.userid);
+        await questionRepository.updateQuestionsAnswers(req.body.question, answer.id);
         res.status(201).json(answer);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -54,7 +56,12 @@ const updateAnswerController = async (req, res) => {
 
 const deleteAnswerController = async (req, res) => {
     try {
+        const answer = await answerRepository.getAnswerById(req.params.id);
+        if (!answer) {
+            return res.status(400).json("Odpoveď nebola nájdená");
+        }
         await deleteAnswer(req.params.id);
+        await questionRepository.deleteQuestion(answer.question, req.params.id )
         res.status(200).json({ message: 'Odpoveď bola úspešne odstránená' });
     } catch (error) {
         res.status(400).json({ error: error.message });

@@ -3,7 +3,7 @@ const userModel = require("../models/user.model");
 
 const getAllQuestions = async() => {
     try {
-        const questions = await questionModel.find().populate("answers","title").populate({path: "userid", populate: { path: "subplaces", select: "name" }});
+        const questions = await questionModel.find().populate("answers","body").populate({path: "userid", populate: { path: "subplaces", select: "name" }});
         return questions;
     } catch (error) {
         throw new Error("Chyba pri získavaní otkázky: " + error.message);
@@ -38,9 +38,9 @@ const updateQuestion = async (id, questionData) => {
     }
 };
 
-const deleteQuestion = async (id) => {
+const deleteQuestion = async (questionId, answerId) => {
     try {
-        await questionModel.findByIdAndDelete(id);
+        await questionModel.findByIdAndUpdate(questionId, {$pull: {answers: answerId}});
     } catch (error) {
         throw new Error('Chyba pri mazaní otázky: ' + error.message);
     }
@@ -48,7 +48,7 @@ const deleteQuestion = async (id) => {
 
 const updateQuestionsAnswers = async (questionId, answerid) => {
     try {
-        const question = await questionModel.findByIdAndUpdate(questionId, {$addToSet: {answers: answerid}});
+        const question = await questionModel.findByIdAndUpdate(questionId, {$push: {answers: answerid}});
         if (!question) {
             throw new Error('Otázka nenájdená');
         }
