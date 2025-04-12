@@ -11,5 +11,6 @@ router.get("/getAllQuestions", questionController.getAll);
 router.get("/filterQuestions", questionController.filterByTagsController);
 router.get("/sortQuestions", questionController.sortQuestionsController);
 router.get("/getSubplacesFeed", subplaceController.subplacesFeedController);
+router.get("/questions/:id", questionController.getQuestionController);
 
 module.exports = router;
