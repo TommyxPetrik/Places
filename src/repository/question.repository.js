@@ -24,7 +24,11 @@ const getQuestionById = async (id) => {
     const question = await questionModel
       .findById(id)
       .populate("userid")
-      .populate("answers");
+      .populate("answers")
+      .populate({
+        path: "subplace",
+        populate: { path: "name", select: "name" },
+      });
     return question;
   } catch (error) {
     throw new Error("Chyba pri získavaní otázky: " + error.message);
@@ -100,6 +104,7 @@ const downvoteQuestion = async (questionId) => {
       { $inc: { upvotes: -1 } },
       { new: true }
     );
+    return question;
   } catch (error) {
     throw new Error("Chyba pri downvote otázky: " + error.message);
   }

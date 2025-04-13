@@ -7,6 +7,8 @@ const {
   getAllQuestions,
   feed,
   homepageFeed,
+  upvoteQuestion,
+  downvoteQuestion,
 } = require("../repository/question.repository");
 const userRepository = require("../repository/user.repository");
 const subplaceRepository = require("../repository/subplace.repository");
@@ -161,6 +163,24 @@ const homepageFeedController = async (req, res) => {
   }
 };
 
+const upvoteQuestionController = async (req, res) => {
+  try {
+    const question = await upvoteQuestion(req.params.id);
+    return res.status(200).json(question);
+  } catch (error) {
+    return res.status(400).json({ message: "Chyba pri upvotovaní otázky" });
+  }
+};
+
+const downvoteQuestionController = async (req, res) => {
+  try {
+    const question = await downvoteQuestion(req.params.id);
+    return res.status(200).json(question);
+  } catch (error) {
+    return res.status(400).json({ message: "Chyba pri upvotovaní otázky" });
+  }
+};
+
 module.exports = {
   createQuestionController,
   getQuestionController,
@@ -170,4 +190,6 @@ module.exports = {
   sortQuestionsController,
   filterByTagsController,
   homepageFeedController,
+  upvoteQuestionController,
+  downvoteQuestionController,
 };

@@ -12,5 +12,10 @@ router.get("/filterQuestions", questionController.filterByTagsController);
 router.get("/sortQuestions", questionController.sortQuestionsController);
 router.get("/getSubplacesFeed", subplaceController.subplacesFeedController);
 router.get("/questions/:id", questionController.getQuestionController);
+router.post("/upvoteQuestion/:id", questionController.upvoteQuestionController);
+router.post(
+  "/downvoteQuestion/:id",
+  questionController.downvoteQuestionController
+);
 
 module.exports = router;
