@@ -24,11 +24,15 @@ const getQuestionById = async (id) => {
     const question = await questionModel
       .findById(id)
       .populate("userid")
-      .populate("answers")
       .populate({
         path: "subplace",
         populate: { path: "name", select: "name" },
-      });
+      })
+      .populate({
+        path: "answers",
+        model: "Answer",
+      })
+      .lean();
     return question;
   } catch (error) {
     throw new Error("Chyba pri získavaní otázky: " + error.message);
