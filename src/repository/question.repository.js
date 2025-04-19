@@ -88,14 +88,17 @@ const updateQuestionsAnswers = async (questionId, answerid) => {
 
 const upvoteQuestion = async (questionId) => {
   try {
-    const question = await questionModel.findByIdAndUpdate(
-      questionId,
-      { $inc: { upvotes: 1 } },
-      { new: true }
-    );
+    const question = await questionModel
+      .findByIdAndUpdate(questionId, { $inc: { upvotes: 1 } }, { new: true })
+      .populate("subplace", "name")
+      .populate({
+        path: "userid",
+        populate: { path: "subplaces", select: "name" },
+      });
     if (!question) {
       throw new Error("Otázka neexistuje alebo bola odstránená.");
     }
+    return question;
   } catch (error) {
     throw new Error("Chyba pri upvote otázky: " + error.message);
   }
@@ -103,11 +106,13 @@ const upvoteQuestion = async (questionId) => {
 
 const downvoteQuestion = async (questionId) => {
   try {
-    const question = await questionModel.findByIdAndUpdate(
-      questionId,
-      { $inc: { upvotes: -1 } },
-      { new: true }
-    );
+    const question = await questionModel
+      .findByIdAndUpdate(questionId, { $inc: { upvotes: -1 } }, { new: true })
+      .populate("subplace", "name")
+      .populate({
+        path: "userid",
+        populate: { path: "subplaces", select: "name" },
+      });
     return question;
   } catch (error) {
     throw new Error("Chyba pri downvote otázky: " + error.message);

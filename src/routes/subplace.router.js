@@ -15,6 +15,4 @@ router.delete("/:id", subplaceController.deleteSubplaceById);
 router.get("/:id", subplaceController.getSubplaceById);
 router.put("/:id", subplaceController.updateSubplace);
 
-
-
 module.exports = router;
