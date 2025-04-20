@@ -30,8 +30,8 @@ const userSchema = new Schema({
   subplaces: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subplace" }],
   karma: { type: Number, default: 0 },
   salt: { type: String },
-  upvotedQuestion: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
-  downvotedQuestion: [
+  upvotedQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
+  downvotedQuestions: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Question" },
   ],
   upvotedAnswers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Answer" }],

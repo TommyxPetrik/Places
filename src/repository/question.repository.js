@@ -86,10 +86,14 @@ const updateQuestionsAnswers = async (questionId, answerid) => {
   }
 };
 
-const upvoteQuestion = async (questionId) => {
+const upvoteQuestion = async (questionId, value) => {
   try {
     const question = await questionModel
-      .findByIdAndUpdate(questionId, { $inc: { upvotes: 1 } }, { new: true })
+      .findByIdAndUpdate(
+        questionId,
+        { $inc: { upvotes: value } },
+        { new: true }
+      )
       .populate("subplace", "name")
       .populate({
         path: "userid",
@@ -104,10 +108,14 @@ const upvoteQuestion = async (questionId) => {
   }
 };
 
-const downvoteQuestion = async (questionId) => {
+const downvoteQuestion = async (questionId, value) => {
   try {
     const question = await questionModel
-      .findByIdAndUpdate(questionId, { $inc: { upvotes: -1 } }, { new: true })
+      .findByIdAndUpdate(
+        questionId,
+        { $inc: { upvotes: value } },
+        { new: true }
+      )
       .populate("subplace", "name")
       .populate({
         path: "userid",

@@ -12,6 +12,7 @@ const {
 } = require("../../src/repository/user.repository");
 const jwt = require("jsonwebtoken");
 const placeRepository = require("./../repository/place.repository");
+const userRepository = require("../repository/user.repository");
 
 const createUserController = async (req, res) => {
   try {
@@ -112,6 +113,17 @@ const deleteUserController = async (req, res) => {
   }
 };
 
+const getUserVotesController = async (req, res) => {
+  try {
+    const votes = await userRepository.getUserVotes(req.user.userid);
+    console.log(votes);
+
+    return res.status(200).json(votes);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createUserController,
   getUserController,
@@ -120,4 +132,5 @@ module.exports = {
   deleteUserController,
   getAllUsersController,
   loginUserController,
+  getUserVotesController,
 };

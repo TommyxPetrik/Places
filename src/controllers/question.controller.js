@@ -12,6 +12,7 @@ const {
 } = require("../repository/question.repository");
 const userRepository = require("../repository/user.repository");
 const subplaceRepository = require("../repository/subplace.repository");
+const questionRepository = require("../repository/question.repository");
 
 const createQuestionController = async (req, res) => {
   try {
@@ -165,19 +166,37 @@ const homepageFeedController = async (req, res) => {
 
 const upvoteQuestionController = async (req, res) => {
   try {
-    const question = await upvoteQuestion(req.params.id);
+    const voteChange = await userRepository.toggleQuestionUpvote(
+      req.user.userid,
+      req.params.id
+    );
+
+    const question = await questionRepository.upvoteQuestion(
+      req.params.id,
+      voteChange
+    );
+
     return res.status(200).json(question);
   } catch (error) {
-    return res.status(400).json({ message: "Chyba pri upvotovaní otázky" });
+    return res.status(400).json({ message: "Chyba pri upvote otázky" });
   }
 };
 
 const downvoteQuestionController = async (req, res) => {
   try {
-    const question = await downvoteQuestion(req.params.id);
+    const voteChange = await userRepository.toggleQuestionDownvote(
+      req.user.userid,
+      req.params.id
+    );
+
+    const question = await questionRepository.downvoteQuestion(
+      req.params.id,
+      voteChange
+    );
+
     return res.status(200).json(question);
   } catch (error) {
-    return res.status(400).json({ message: "Chyba pri upvotovaní otázky" });
+    return res.status(400).json({ message: "Chyba pri downvote otázky" });
   }
 };
 
