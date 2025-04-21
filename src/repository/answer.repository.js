@@ -61,14 +61,17 @@ const deleteAnswer = async (answerId) => {
 
 const upvoteAnswer = async (answerId) => {
   try {
-    const answer = await answerModel.findOneAndUpdate(
-      answerId,
-      { $inc: { upvotes: 1 } },
-      { new: true }
-    );
+    const answer = await answerModel
+      .findOneAndUpdate(answerId, { $inc: { upvotes: 1 } }, { new: true })
+      .populate({
+        path: "userid",
+        populate: { path: "subplaces", select: "name" },
+      })
+      .populate("question");
     if (!answer) {
       throw new Error("Odpoveď neexistuje alebo bola odstránená.");
     }
+    return answer;
   } catch (error) {
     throw new Error("Chyba pri upvote odpovede: " + error.message);
   }
@@ -76,14 +79,17 @@ const upvoteAnswer = async (answerId) => {
 
 const downvoteAnswer = async (answerId) => {
   try {
-    const answer = await answerModel.findOneAndUpdate(
-      answerId,
-      { $inc: { upvotes: -1 } },
-      { new: true }
-    );
+    const answer = await answerModel
+      .findOneAndUpdate(answerId, { $inc: { upvotes: -1 } }, { new: true })
+      .populate({
+        path: "userid",
+        populate: { path: "subplaces", select: "name" },
+      })
+      .populate("question");
     if (!answer) {
       throw new Error("Odpoveď neexistuje alebo bola odstránená.");
     }
+    return answer;
   } catch (error) {
     throw new Error("Chyba pri downvote odpovede: " + error.message);
   }

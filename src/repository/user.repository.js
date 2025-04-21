@@ -163,6 +163,64 @@ const toggleQuestionDownvote = async (userid, questionid) => {
   }
 };
 
+const toggleAnswerUpvote = async (userid, answerid) => {
+  try {
+    const user = await userModel.findById(userid);
+
+    const hasUpvoted = user.upvotedAnswers.includes(answerid);
+    const hasDownvoted = user.downvotedAnswers.includes(answerid);
+
+    let voteChange = 0;
+
+    if (hasUpvoted) {
+      await userModel.findByIdAndUpdate(userid, {
+        $pull: { upvotedAnswers: answerid },
+      });
+      voteChange = -1;
+    } else {
+      await userModel.findByIdAndUpdate(userid, {
+        $addToSet: { upvotedAnswers: answerid },
+        $pull: { downvotedAnswers: answerid },
+      });
+
+      voteChange = hasDownvoted ? 2 : 1;
+    }
+
+    return voteChange;
+  } catch (error) {
+    throw new Error("Chyba pri prepínaní upvotu: " + error.message);
+  }
+};
+
+const toggleAnswerDownvote = async (userid, answerid) => {
+  try {
+    const user = await userModel.findById(userid);
+
+    const hasDownvoted = user.downvotedAnswers.includes(answerid);
+    const hasUpvoted = user.upvotedAnswers.includes(answerid);
+
+    let voteChange = 0;
+
+    if (hasDownvoted) {
+      await userModel.findByIdAndUpdate(userid, {
+        $pull: { downvotedAnswers: answerid },
+      });
+      voteChange = 1;
+    } else {
+      await userModel.findByIdAndUpdate(userid, {
+        $addToSet: { downvotedAnswers: answerid },
+        $pull: { upvotedAnswers: answerid },
+      });
+
+      voteChange = hasUpvoted ? -2 : -1;
+    }
+
+    return voteChange;
+  } catch (error) {
+    throw new Error("Chyba pri prepínaní downvotu: " + error.message);
+  }
+};
+
 const getUserVotes = async (userid) => {
   try {
     const user = await userModel
@@ -173,18 +231,19 @@ const getUserVotes = async (userid) => {
       .lean();
 
     if (!user) throw new Error("Používateľ neexistuje");
+
     return {
       questionVotes: {
-        upvoted: user.upvotedQuestions.map((id) => id.toString()),
-        downvoted: user.downvotedQuestions.map((id) => id.toString()),
+        upvoted: (user.upvotedQuestions || []).map((id) => id.toString()),
+        downvoted: (user.downvotedQuestions || []).map((id) => id.toString()),
       },
-      // answerVotes: {
-      //   upvoted: user.upvotedAnswers.map((id) => id.toString()),
-      //   downvoted: user.downvotedAnswers.map((id) => id.toString()),
-      // },
+      answerVotes: {
+        upvoted: (user.upvotedAnswers || []).map((id) => id.toString()),
+        downvoted: (user.downvotedAnswers || []).map((id) => id.toString()),
+      },
     };
-  } catch (err) {
-    throw new Error("Chyba pri získavaní hlasov používateľa: " + err.message);
+  } catch (error) {
+    throw new Error("Chyba pri získavaní hlasov používateľa: " + error.message);
   }
 };
 
@@ -201,4 +260,6 @@ module.exports = {
   toggleQuestionUpvote,
   toggleQuestionDownvote,
   getUserVotes,
+  toggleAnswerDownvote,
+  toggleAnswerUpvote,
 };

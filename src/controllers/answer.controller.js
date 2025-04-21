@@ -96,6 +96,42 @@ const getAnswerTreeController = async (req, res) => {
   }
 };
 
+const upvoteAnswerController = async (req, res) => {
+  try {
+    const voteChange = await userRepository.toggleAnswerUpvote(
+      req.user.userid,
+      req.params.id
+    );
+
+    const answer = await answerRepository.upvoteAnswer(
+      req.params.id,
+      voteChange
+    );
+
+    return res.status(200).json(answer);
+  } catch (error) {
+    return res.status(400).json({ message: "Chyba pri upvote odpovede" });
+  }
+};
+
+const downvoteAnswerController = async (req, res) => {
+  try {
+    const voteChange = await userRepository.toggleAnswerDownvote(
+      req.user.userid,
+      req.params.id
+    );
+
+    const answer = await answerRepository.downvoteAnswer(
+      req.params.id,
+      voteChange
+    );
+
+    return res.status(200).json(answer);
+  } catch (error) {
+    return res.status(400).json({ message: "Chyba pri downvote odpovede" });
+  }
+};
+
 module.exports = {
   createAnswerController,
   getAnswersController,
@@ -103,4 +139,6 @@ module.exports = {
   deleteAnswerController,
   getAllAnswersController,
   getAnswerTreeController,
+  upvoteAnswerController,
+  downvoteAnswerController,
 };

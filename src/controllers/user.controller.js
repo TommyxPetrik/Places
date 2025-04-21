@@ -116,7 +116,6 @@ const deleteUserController = async (req, res) => {
 const getUserVotesController = async (req, res) => {
   try {
     const votes = await userRepository.getUserVotes(req.user.userid);
-    console.log(votes);
 
     return res.status(200).json(votes);
   } catch (error) {
