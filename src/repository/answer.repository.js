@@ -59,15 +59,20 @@ const deleteAnswer = async (answerId) => {
   }
 };
 
-const upvoteAnswer = async (answerId) => {
+const upvoteAnswer = async (answerId, voteChange) => {
   try {
     const answer = await answerModel
-      .findOneAndUpdate(answerId, { $inc: { upvotes: 1 } }, { new: true })
+      .findByIdAndUpdate(
+        answerId,
+        { $inc: { upvotes: voteChange } },
+        { new: true }
+      )
       .populate({
         path: "userid",
         populate: { path: "subplaces", select: "name" },
       })
       .populate("question");
+
     if (!answer) {
       throw new Error("Odpoveď neexistuje alebo bola odstránená.");
     }
@@ -77,10 +82,14 @@ const upvoteAnswer = async (answerId) => {
   }
 };
 
-const downvoteAnswer = async (answerId) => {
+const downvoteAnswer = async (answerId, voteChange) => {
   try {
     const answer = await answerModel
-      .findOneAndUpdate(answerId, { $inc: { upvotes: -1 } }, { new: true })
+      .findByIdAndUpdate(
+        answerId,
+        { $inc: { upvotes: voteChange } },
+        { new: true }
+      )
       .populate({
         path: "userid",
         populate: { path: "subplaces", select: "name" },
