@@ -5,9 +5,7 @@ const authMiddleware = async (req, res, next) => {
   if (req.url.startsWith("/public")) {
     return next();
   }
-  // const token = req.headers["x-access-token"];
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiI2N2U2YmUyMjU4YTBmMDczNzlmYTgwYjMiLCJ1c2VybmFtZSI6IkNpZ2FuIiwidXNlcnJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzE0MjE0fQ.7lI6C3OQig9Rk6Fhkqx1Lc4CC91Q2rPQEYTg_LjiDwE";
+  const token = req.headers["x-access-token"];
   if (!token) {
     return res.status(401).json({ message: "Chyba overenia totožnosti" });
   }

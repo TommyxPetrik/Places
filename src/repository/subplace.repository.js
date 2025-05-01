@@ -250,14 +250,17 @@ const checkIfUserIsCreator = async (userid, subplaceid) => {
   }
 };
 
-const subplacesFeed = async () => {
+const subplacesFeed = async (skip = 0, limit = 10) => {
   try {
     const subplaces = await subplaceModel
       .find()
       .populate("moderators", "name")
       .populate("creator", "name")
       .populate("questions", "title")
-      .populate("membersids", "name");
+      .populate("membersids", "name")
+      .skip(skip)
+      .limit(limit);
+
     const subplacesFeed = subplaces.sort(() => Math.random() - 0.5);
     return subplacesFeed;
   } catch (error) {

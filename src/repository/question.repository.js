@@ -127,7 +127,7 @@ const downvoteQuestion = async (questionId, value) => {
   }
 };
 
-const homepageFeed = async () => {
+const homepageFeed = async (skip = 0, limit = 10) => {
   try {
     const questions = await questionModel
       .find()
@@ -137,9 +137,11 @@ const homepageFeed = async () => {
         populate: { path: "subplaces", select: "name" },
       })
       .populate("subplace", "name")
-      .populate("answers", "body");
-    const questionsFeed = questions.sort(() => Math.random() - 0.5);
+      .populate("answers", "body")
+      .skip(skip)
+      .limit(limit);
 
+    const questionsFeed = questions.sort(() => Math.random() - 0.5);
     return questionsFeed;
   } catch (error) {
     throw new Error("Chyba pri získavaní otázok: " + error.message);

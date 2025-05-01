@@ -18,7 +18,6 @@ const createAnswerController = async (req, res) => {
       userid: req.user.userid,
       username: req.user.username,
     };
-    console.log(newAnswer);
 
     const answer = await createAnswer(newAnswer);
     await userRepository.updateUserKarma(req.user.userid);

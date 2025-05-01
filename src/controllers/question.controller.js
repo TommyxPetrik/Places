@@ -153,12 +153,19 @@ const filterByTagsController = async (req, res) => {
 
 const homepageFeedController = async (req, res) => {
   try {
-    const feed = await homepageFeed();
-    if (!feed || feed.length === 0) {
-      return res.status(400).json("Neboli nájdene žiadne otázky");
-    }
-    const limitedFeed = feed.slice(0, 10);
-    res.status(200).json(limitedFeed);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const feed = await homepageFeed(skip, limit);
+
+    console.log(feed);
+
+    // if (!feed || feed.length === 0) {
+    //   return res.status(404).json("Neboli nájdené žiadne otázky");
+    // }
+
+    res.status(200).json(feed);
   } catch (error) {
     return res.status(500).json({ message: "Chyba pri získavaní otázok" });
   }

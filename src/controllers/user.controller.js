@@ -34,6 +34,7 @@ const loginUserController = async (req, res) => {
     if (!user) {
       return res.status(400).json("Používateľ neexistuje");
     }
+
     const matchedpassword = checkUserPassword(
       req.body.password,
       user.password,
@@ -42,6 +43,7 @@ const loginUserController = async (req, res) => {
     if (!matchedpassword) {
       throw new Error("Nesprávne heslo");
     }
+
     const token = jwt.sign(
       {
         userid: user.id,
@@ -50,7 +52,12 @@ const loginUserController = async (req, res) => {
       },
       process.env.API_KEY
     );
-    res.status(200).send({ token });
+
+    res.status(200).send({
+      token,
+      email: user.email,
+      id: user.id,
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
