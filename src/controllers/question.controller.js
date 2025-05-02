@@ -159,7 +159,7 @@ const homepageFeedController = async (req, res) => {
 
     const feed = await homepageFeed(skip, limit);
 
-    console.log(feed);
+    // console.log(feed);
 
     // if (!feed || feed.length === 0) {
     //   return res.status(404).json("Neboli nájdené žiadne otázky");
