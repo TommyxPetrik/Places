@@ -99,18 +99,9 @@ const getQuestionController = async (req, res) => {
 const updateQuestionController = async (req, res) => {
   try {
     const question = await getQuestionById(req.params.id);
-    // const id = req.user.userid;
-    // if (!id) {
-    //   return res.status(400).json("Neplatné ID používateľa");
-    // }
     if (!question) {
       return res.status(404).json({ message: "Otázka nenájdená" });
     }
-    // if (question.userid.id.toString() !== id.toString()) {
-    //   return res
-    //     .status(403)
-    //     .json("Nemáte správne oprávenia uprávovať túto otázku");
-    // }
     const updatedQuestion = await updateQuestion(req.params.id, req.body);
     if (!updatedQuestion) {
       return res.status(404).json({ message: "Otázka nenájdená" });

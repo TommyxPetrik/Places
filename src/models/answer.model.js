@@ -22,6 +22,7 @@ const answerSchema = new Schema(
     },
     replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Answer" }],
     upvotes: { type: Number, default: 0 },
+    edited: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

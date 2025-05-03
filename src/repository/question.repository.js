@@ -51,23 +51,23 @@ const createQuestion = async (questionData) => {
 
 const updateQuestion = async (id, questionData) => {
   try {
-    console.log("ID:", id);
-    console.log("QuestionData:", questionData);
+    questionData.edited = true;
 
-    const question = await questionModel.findByIdAndUpdate(id, questionData, {
-      new: true,
-    });
+    const question = await questionModel
+      .findByIdAndUpdate(id, questionData, {
+        new: true,
+      })
+      .populate("userid", "name")
+      .populate("subplace", "name");
     return question;
   } catch (error) {
     throw new Error("Chyba pri aktualizácii otázky: " + error.message);
   }
 };
 
-const deleteQuestion = async (questionId, answerId) => {
+const deleteQuestion = async (questionId) => {
   try {
-    await questionModel.findByIdAndUpdate(questionId, {
-      $pull: { answers: answerId },
-    });
+    await questionModel.findByIdAndDelete(questionId);
   } catch (error) {
     throw new Error("Chyba pri mazaní otázky: " + error.message);
   }

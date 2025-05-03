@@ -57,6 +57,7 @@ const loginUserController = async (req, res) => {
       token,
       email: user.email,
       id: user.id,
+      role: user.userrole,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });

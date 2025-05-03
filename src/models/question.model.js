@@ -21,6 +21,7 @@ const questionSchema = new Schema(
       required: true,
     },
     tags: [{ type: String }],
+    edited: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
