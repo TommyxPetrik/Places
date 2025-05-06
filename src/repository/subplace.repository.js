@@ -268,6 +268,18 @@ const subplacesFeed = async (skip = 0, limit = 10) => {
   }
 };
 
+const getSubplaceTags = async (subplaceid) => {
+  try {
+    const subplace = await subplaceModel.findById(subplaceid);
+    if (!subplace) {
+      throw new Error("Subplace neexistuje");
+    }
+    return subplace.tags;
+  } catch (error) {
+    throw new Error("Chyba pri získavaní tagov subplaces: " + error.message);
+  }
+};
+
 module.exports = {
   createSubplace,
   getAllSubplaces,
@@ -285,4 +297,5 @@ module.exports = {
   getAllQuestions,
   checkIfUserIsCreator,
   subplacesFeed,
+  getSubplaceTags,
 };

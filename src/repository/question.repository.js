@@ -1,5 +1,6 @@
 const questionModel = require("../models/question.model");
 const userModel = require("../models/user.model");
+const answerModel = require("../models/answer.model");
 
 const getAllQuestions = async () => {
   try {
@@ -67,6 +68,7 @@ const updateQuestion = async (id, questionData) => {
 
 const deleteQuestion = async (questionId) => {
   try {
+    await answerModel.deleteMany({ question: questionId });
     await questionModel.findByIdAndDelete(questionId);
   } catch (error) {
     throw new Error("Chyba pri mazaní otázky: " + error.message);
@@ -148,6 +150,17 @@ const homepageFeed = async (skip = 0, limit = 10) => {
   }
 };
 
+const getSubplacesQuestions = async (subplaceId) => {
+  try {
+    const questions = await questionModel
+      .find({ subplace: subplaceId })
+      .sort({ createdAt: -1 });
+
+    return questions;
+  } catch (error) {
+    throw new Error("Chyba pri získavaní otázok: " + error.message);
+  }
+};
 module.exports = {
   getQuestionById,
   createQuestion,
@@ -158,4 +171,5 @@ module.exports = {
   upvoteQuestion,
   downvoteQuestion,
   homepageFeed,
+  getSubplacesQuestions,
 };

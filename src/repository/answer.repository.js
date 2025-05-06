@@ -41,6 +41,7 @@ const getAllAnswers = async () => {
 
 const updateAnswer = async (id, answerData) => {
   try {
+    answerData.edited = true;
     const answer = await answerModel.findByIdAndUpdate(id, answerData, {
       new: true,
     });
@@ -52,6 +53,8 @@ const updateAnswer = async (id, answerData) => {
 
 const deleteAnswer = async (answerId) => {
   try {
+    console.log(answerId);
+
     const deleted = await answerModel.findByIdAndDelete(answerId);
     return true;
   } catch (error) {

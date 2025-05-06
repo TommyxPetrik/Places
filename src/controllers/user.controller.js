@@ -130,6 +130,18 @@ const getUserVotesController = async (req, res) => {
   }
 };
 
+const getJoinedSubplacesController = async (req, res) => {
+  try {
+    const subplaces = await userRepository.getJoinedSubplaces(req.user.userid);
+    if (!subplaces) {
+      return res.status(404).json({ message: "Užívateľ nenájdený" });
+    }
+    res.status(200).json(subplaces);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createUserController,
   getUserController,
@@ -139,4 +151,5 @@ module.exports = {
   getAllUsersController,
   loginUserController,
   getUserVotesController,
+  getJoinedSubplacesController,
 };

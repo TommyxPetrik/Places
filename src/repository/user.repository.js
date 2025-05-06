@@ -247,6 +247,16 @@ const getUserVotes = async (userid) => {
   }
 };
 
+const getJoinedSubplaces = async (userid) => {
+  try {
+    const user = await userModel.findById(userid).populate("subplaces", "name");
+    const joinedNames = user.subplaces.map((sp) => sp.name);
+    return joinedNames;
+  } catch (error) {
+    throw new Error("Chyba pri získavaní subplaces: " + error.message);
+  }
+};
+
 module.exports = {
   getUserById,
   getUserByUsername,
@@ -262,4 +272,5 @@ module.exports = {
   getUserVotes,
   toggleAnswerDownvote,
   toggleAnswerUpvote,
+  getJoinedSubplaces,
 };

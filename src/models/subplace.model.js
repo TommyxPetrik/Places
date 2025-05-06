@@ -15,6 +15,7 @@ const subplaceSchema = new mongoose.Schema({
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
   createdAt: { type: Date, default: Date.now },
   rules: [{ type: String, required: true }],
+  tags: [{ type: String, required: true }],
 });
 
 subplaceSchema.post("findOneAndUpdate", async function (doc) {

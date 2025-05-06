@@ -72,12 +72,7 @@ const updateAnswerController = async (req, res) => {
 
 const deleteAnswerController = async (req, res) => {
   try {
-    const answer = await answerRepository.getAnswerById(req.params.id);
-    if (!answer) {
-      return res.status(400).json("Odpoveď nebola nájdená");
-    }
     await deleteAnswer(req.params.id);
-    await questionRepository.deleteQuestion(answer.question, req.params.id);
     res.status(200).json({ message: "Odpoveď bola úspešne odstránená" });
   } catch (error) {
     res.status(400).json({ error: error.message });

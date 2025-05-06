@@ -150,12 +150,6 @@ const homepageFeedController = async (req, res) => {
 
     const feed = await homepageFeed(skip, limit);
 
-    // console.log(feed);
-
-    // if (!feed || feed.length === 0) {
-    //   return res.status(404).json("Neboli nájdené žiadne otázky");
-    // }
-
     res.status(200).json(feed);
   } catch (error) {
     return res.status(500).json({ message: "Chyba pri získavaní otázok" });
@@ -198,6 +192,18 @@ const downvoteQuestionController = async (req, res) => {
   }
 };
 
+const getSubplacesQuestionsController = async (req, res) => {
+  try {
+    const subplaceId = req.params.id;
+    const questions = await questionRepository.getSubplacesQuestions(
+      subplaceId
+    );
+    res.status(200).json(questions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createQuestionController,
   getQuestionController,
@@ -209,4 +215,5 @@ module.exports = {
   homepageFeedController,
   upvoteQuestionController,
   downvoteQuestionController,
+  getSubplacesQuestionsController,
 };

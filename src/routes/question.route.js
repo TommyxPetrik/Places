@@ -3,6 +3,7 @@ const router = express.Router();
 const questionController = require("../controllers/question.controller");
 
 router.post("/create", questionController.createQuestionController);
+router.get("/sortQuestions", questionController.sortQuestionsController);
 router.get("/:id", questionController.getQuestionController);
 router.put("/:id", questionController.updateQuestionController);
 router.put("/upvote/:id", questionController.upvoteQuestionController);

@@ -5,6 +5,7 @@ const userController = require("./../controllers/user.controller");
 router.get("/getAll", userController.getAllUsersController);
 router.get("/username/:username", userController.getUserByUsernameController);
 router.get("/getUserVotes", userController.getUserVotesController);
+router.get("/getJoinedSubplaces", userController.getJoinedSubplacesController);
 router.get("/:id", userController.getUserController);
 router.put("/:id", userController.updateUserController);
 router.delete("/:id", userController.deleteUserController);

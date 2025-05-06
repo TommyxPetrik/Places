@@ -97,24 +97,15 @@ const deleteSubplaceById = async (req, res) => {
 
 const joinSubplace = async (req, res) => {
   try {
-    const existing = await subplaceRepository.checkIfUserInSubplace(
+    await subplaceRepository.updateMembers(
       req.user.userid,
-      req.query.subplaceid
+      req.params.subplaceId
     );
-    if (!existing) {
-      await subplaceRepository.updateMembers(
-        req.user.userid,
-        req.query.subplaceid
-      );
-      await userRepository.updateUserSubplaces(
-        req.user.userid,
-        req.query.subplaceid
-      );
-      res.status(200).json("Úspešne pridaný do subplace");
-    }
-    if (existing) {
-      res.status(200).json("Používateľ je už členom subplace");
-    }
+    await userRepository.updateUserSubplaces(
+      req.user.userid,
+      req.params.subplaceId
+    );
+    res.status(200).json("Úspešne pridaný do subplace");
   } catch (error) {
     res
       .status(400)
@@ -222,12 +213,22 @@ const getAllSubplaceQuestions = async (req, res) => {
 
 const subplacesFeedController = async (req, res) => {
   try {
-    const subplaces = await subplaceRepository.subplacesFeed();
-    if (!subplaces || subplaces == [] || subplaces.length === 0) {
-      return res.status(400).json(" Neboli nájdené žiadne subplaces ");
-    }
-    const limitedSubplaces = subplaces.slice(0, 10);
-    return res.status(200).json(limitedSubplaces);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const subplacesFeed = await subplaceRepository.subplacesFeed(skip, limit);
+
+    return res.status(200).json(subplacesFeed);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getSubplaceTagsController = async (req, res) => {
+  try {
+    const tags = await subplaceRepository.getSubplaceTags(req.params.id);
+    res.status(200).json(tags);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -248,4 +249,5 @@ module.exports = {
   deleteQuestion,
   getAllSubplaceQuestions,
   subplacesFeedController,
+  getSubplaceTagsController,
 };

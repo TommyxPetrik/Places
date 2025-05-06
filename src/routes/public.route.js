@@ -7,7 +7,17 @@ const answerController = require("./../controllers/answer.controller");
 
 router.post("/signUp", userController.createUserController);
 router.post("/SignIn", userController.loginUserController);
+router.get(
+  "/getSuplacesQuestions/:id",
+  questionController.getSubplacesQuestionsController
+);
+router.get(
+  "/getSubplaceTags/:id",
+  subplaceController.getSubplaceTagsController
+);
 router.get("/feed", questionController.homepageFeedController);
+router.get("/getAllSubplaces", subplaceController.getAllSubplaces);
+router.get("/subplacefeed", subplaceController.subplacesFeedController);
 router.get("/getAllQuestions", questionController.getAll);
 router.get("/filterQuestions", questionController.filterByTagsController);
 router.get("/sortQuestions", questionController.sortQuestionsController);
