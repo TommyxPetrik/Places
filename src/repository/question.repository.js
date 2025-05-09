@@ -20,6 +20,15 @@ const getAllQuestions = async () => {
   }
 };
 
+const getQuestionByTitle = async (title) => {
+  try {
+    const question = await questionModel.findOne({ title: title });
+    return question;
+  } catch (error) {
+    throw new Error("Chyba pri hľadaní otázky: " + error.message);
+  }
+};
+
 const getQuestionById = async (id) => {
   try {
     const question = await questionModel
@@ -154,7 +163,8 @@ const getSubplacesQuestions = async (subplaceId) => {
   try {
     const questions = await questionModel
       .find({ subplace: subplaceId })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .populate("subplace", "name");
 
     return questions;
   } catch (error) {
@@ -172,4 +182,5 @@ module.exports = {
   downvoteQuestion,
   homepageFeed,
   getSubplacesQuestions,
+  getQuestionByTitle,
 };

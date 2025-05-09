@@ -21,6 +21,7 @@ if (!process.env.API_KEY) {
 
 const app = express();
 app.use(express.json());
+app.use(express.static("public"));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");

@@ -17,15 +17,14 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-    length: { min: 10 },
-    required: true,
+    minlength: 10,
   },
   password_repeat: {
     type: String,
     required: true,
-    length: { min: 10 },
-    required: true,
+    minlength: 10,
   },
+
   userrole: { type: String, default: "user" },
   subplaces: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subplace" }],
   karma: { type: Number, default: 0 },
@@ -36,6 +35,10 @@ const userSchema = new Schema({
   ],
   upvotedAnswers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Answer" }],
   downvotedAnswers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Answer" }],
+  imageLocation: {
+    type: String,
+    default: "",
+  },
 });
 
 userSchema.pre("save", function (next) {

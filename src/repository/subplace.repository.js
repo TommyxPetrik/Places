@@ -211,6 +211,11 @@ const deleteMember = async (memberid, subplaceid) => {
       { $pull: { membersids: memberid } },
       { new: true }
     );
+    const user = await userModel.findByIdAndUpdate(
+      memberid,
+      { $pull: { subplaces: subplaceid } },
+      { new: true }
+    );
     if (!subplace) {
       throw new Error("Subplace neexistuje");
     }
@@ -240,6 +245,8 @@ const getAllQuestions = async (subplaceid) => {
 const checkIfUserIsCreator = async (userid, subplaceid) => {
   try {
     const subplace = await subplaceModel.findById(subplaceid);
+    console.log(subplace);
+
     if (!subplace) {
       throw new Error("Subplace neexistuje");
     }

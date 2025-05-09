@@ -7,6 +7,7 @@ router.post("/create", subplaceController.createSubplace);
 router.get("/name", subplaceController.getByNameController);
 router.put("/edit", subplaceController.updateSubplace);
 router.post("/join/:subplaceId", subplaceController.joinSubplace);
+router.post("/leave/:subplaceId", subplaceController.leaveSubplace);
 router.post("/updateModerators", subplaceController.updateModerators);
 router.post("/deleteModerator", subplaceController.deleteModerator);
 router.delete("/leave", subplaceController.leaveSubplace);

@@ -117,23 +117,17 @@ const leaveSubplace = async (req, res) => {
   try {
     const isCreator = await subplaceRepository.checkIfUserIsCreator(
       req.user.userid,
-      req.query.subplaceid
+      req.params.subplaceId
     );
     if (isCreator) {
       return res
         .status(400)
         .json("Nemôžeš opustiť subplace, pretože si jeho zakladateľ");
     }
-    const existing = await subplaceRepository.checkIfUserInSubplace(
-      req.user.userid,
-      req.query.subplaceid
-    );
-    if (!existing) {
-      res.status(400).json("Pužívateľ nie je členom subplace");
-    }
+
     await subplaceRepository.deleteMember(
       req.user.userid,
-      req.query.subplaceid
+      req.params.subplaceId
     );
     res.status(200).json("Používateľ bol úspešne vymazaný");
   } catch (error) {
@@ -147,7 +141,7 @@ const updateModerators = async (req, res) => {
   try {
     const subplace = await subplaceRepository.updateModerators(
       req.body.userid,
-      req.body.subplaceid
+      req.body.subplaceId
     );
     if (!subplace) {
       return res.status(404).json({ message: "Subplace not found" });
@@ -162,7 +156,7 @@ const deleteModerator = async (req, res) => {
   try {
     const subplace = await subplaceRepository.deletemoderator(
       req.body.userid,
-      req.body.subplaceid
+      req.body.subplaceId
     );
     if (!subplace) {
       return res.status(404).json({ message: "Subplace not found" });
@@ -176,8 +170,8 @@ const deleteModerator = async (req, res) => {
 const updateQuestions = async (req, res) => {
   try {
     const subplace = await subplaceRepository.updateQuestions(
-      req.body.subplaceid,
-      req.body.questionid
+      req.body.subplaceId,
+      req.body.subplaceId
     );
     if (!subplace) {
       return res.status(404).json({ message: "Subplace not found" });
@@ -190,8 +184,8 @@ const updateQuestions = async (req, res) => {
 const deleteQuestion = async (req, res) => {
   try {
     const subplace = await subplaceRepository.deleteQuestion(
-      req.body.subplaceid,
-      req.body.questionid
+      req.body.subplaceId,
+      req.body.subplaceId
     );
     if (!subplace) {
       return res.status(404).json({ message: "Subplace not found" });

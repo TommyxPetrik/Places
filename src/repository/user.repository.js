@@ -14,7 +14,7 @@ const getAllUsers = async () => {
 
 const getUserById = async (id) => {
   try {
-    const user = await userModel.findById(id);
+    const user = await userModel.findById(id).populate("subplaces", "name");
     return user;
   } catch (error) {
     throw new Error("Chyba pri získavaní užívateľa: " + error.message);
@@ -49,6 +49,8 @@ const getUserByEmail = async (email) => {
 const createUser = async (userData) => {
   try {
     const user = new userModel(userData);
+    console.log(user);
+
     await user.save();
     return user;
   } catch (error) {
@@ -59,6 +61,32 @@ const createUser = async (userData) => {
 const updateUser = async (id, userData) => {
   try {
     const user = await userModel.findByIdAndUpdate(id, userData, { new: true });
+    return user;
+  } catch (error) {
+    throw new Error("Chyba pri aktualizácii užívateľa: " + error.message);
+  }
+};
+
+const updateUserProfilePicture = async (id, imagePath) => {
+  try {
+    const user = await userModel.findByIdAndUpdate(
+      id,
+      { imageLocation: imagePath },
+      { new: true }
+    );
+    return user;
+  } catch (error) {
+    throw new Error("Chyba pri aktualizácii užívateľa: " + error.message);
+  }
+};
+
+const deleteUserProfilePicture = async (id) => {
+  try {
+    const user = await userModel.findByIdAndUpdate(
+      id,
+      { imageLocation: "" },
+      { new: true }
+    );
     return user;
   } catch (error) {
     throw new Error("Chyba pri aktualizácii užívateľa: " + error.message);
@@ -257,6 +285,16 @@ const getJoinedSubplaces = async (userid) => {
   }
 };
 
+const getJoinedSubplacesId = async (userid) => {
+  try {
+    const user = await userModel.findById(userid);
+
+    return user.subplaces.map((sp) => sp.toString());
+  } catch (error) {
+    throw new Error("Chyba pri získavaní subplaces: " + error.message);
+  }
+};
+
 module.exports = {
   getUserById,
   getUserByUsername,
@@ -273,4 +311,7 @@ module.exports = {
   toggleAnswerDownvote,
   toggleAnswerUpvote,
   getJoinedSubplaces,
+  getJoinedSubplacesId,
+  updateUserProfilePicture,
+  deleteUserProfilePicture,
 };

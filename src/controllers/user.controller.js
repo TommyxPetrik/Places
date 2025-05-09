@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const multer = require("multer");
 const {
   createUser,
   getUserById,
@@ -14,14 +15,18 @@ const jwt = require("jsonwebtoken");
 const placeRepository = require("./../repository/place.repository");
 const userRepository = require("../repository/user.repository");
 
+const { fileFilter, storage } = require("../utils/fileUpload");
+
+let upload = multer({ storage, fileFilter, limits: { fileSize: "20MB" } });
+
 const createUserController = async (req, res) => {
   try {
     const checkemail = await getUserByEmail(req.body.email);
-    if (checkemail) {
+    if (checkemail !== null) {
       return res.status(400).json("Email už je registrovaný");
     }
-    const user = await createUser(req.body);
-    await placeRepository.updateUsers(user.id);
+    const user = await userRepository.createUser(req.body);
+    await placeRepository.updateUsers(user._id);
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -142,6 +147,81 @@ const getJoinedSubplacesController = async (req, res) => {
   }
 };
 
+const getJoinedSubplacesIdController = async (req, res) => {
+  try {
+    const subplaces = await userRepository.getJoinedSubplacesId(
+      req.user.userid
+    );
+    res.status(200).json(subplaces);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const uploadProfilePictureController = async (req, res) => {
+  upload.single("image")(req, res, async (err) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ message: "File upload error", error: err.message });
+    }
+
+    try {
+      const userId = req.user.userid;
+      let imageLocation = "";
+
+      if (req.file && req.file.path) {
+        imageLocation = req.file.path.replace(/\\/g, "/");
+        imageLocation = imageLocation.slice(imageLocation.indexOf("images/"));
+      }
+
+      const user = await userRepository.updateUserProfilePicture(
+        userId,
+        imageLocation
+      );
+      res.status(200).json(user);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Upload failed", error: err.message });
+    }
+  });
+};
+
+const deleteProfilePictureController = async (req, res) => {
+  try {
+    const userId = req.user.userid;
+    const updatedUser = await userRepository.deleteUserProfilePicture(userId);
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Delete failed", error: err.message });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, password } = req.body;
+    const userId = req.user.userid;
+    const user = await userRepository.getUserById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    user.password = password;
+    user.password_repeat = password;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Password update error:", error);
+    res.status(500).json({ message: "Server error while updating password" });
+  }
+};
+
 module.exports = {
   createUserController,
   getUserController,
@@ -152,4 +232,10 @@ module.exports = {
   loginUserController,
   getUserVotesController,
   getJoinedSubplacesController,
+  getJoinedSubplacesIdController,
+  uploadProfilePictureController,
+  deleteProfilePictureController,
+  uploadProfilePictureController,
+  deleteProfilePictureController,
+  changePassword,
 };

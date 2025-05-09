@@ -48,6 +48,22 @@ const getAll = async (req, res) => {
   }
 };
 
+const getQuestionByNameController = async (req, res) => {
+  const questionTitle = req.query.title;
+  if (!questionTitle) {
+    return res.status(400).json("Názov otázky nie je zadaný");
+  }
+  try {
+    const question = await questionRepository.getQuestionByTitle(questionTitle);
+    if (!question) {
+      return res.status(404).json("Otázka neexistuje");
+    }
+    res.status(200).json(question);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const sortQuestionsController = async (req, res) => {
   try {
     const questions = await getAllQuestions();
@@ -216,4 +232,5 @@ module.exports = {
   upvoteQuestionController,
   downvoteQuestionController,
   getSubplacesQuestionsController,
+  getQuestionByNameController,
 };
