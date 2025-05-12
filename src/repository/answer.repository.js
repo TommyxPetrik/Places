@@ -1,4 +1,5 @@
 const answerModel = require("./../models/answer.model");
+const questionModel = require("../models/question.model");
 
 const createAnswer = async (answerData) => {
   try {
@@ -53,9 +54,20 @@ const updateAnswer = async (id, answerData) => {
 
 const deleteAnswer = async (answerId) => {
   try {
-    console.log(answerId);
+    const answer = await answerModel.findById(answerId);
 
-    const deleted = await answerModel.findByIdAndDelete(answerId);
+    if (!answer) {
+      throw new Error("Odpoveď neexistuje");
+    }
+
+    const questionId = answer.question._id;
+
+    await questionModel.findByIdAndUpdate(questionId, {
+      $pull: { answers: answerId },
+    });
+
+    await answerModel.findByIdAndDelete(answerId);
+
     return true;
   } catch (error) {
     throw new Error("Chyba pri mazaní odpovede: " + error.message);

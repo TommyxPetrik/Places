@@ -6,6 +6,7 @@ const subplaceController = require("./../controllers/subplace.controller");
 const answerController = require("./../controllers/answer.controller");
 
 router.post("/signUp", userController.createUserController);
+router.get("/getAllUsers", userController.getAllUsersController);
 router.post("/SignIn", userController.loginUserController);
 router.get(
   "/getSuplacesQuestions/:id",
@@ -19,6 +20,7 @@ router.get("/feed", questionController.homepageFeedController);
 router.get("/getAllSubplaces", subplaceController.getAllSubplaces);
 router.get("/subplacefeed", subplaceController.subplacesFeedController);
 router.get("/getAllQuestions", questionController.getAll);
+router.get("/getAllAnswers", answerController.getAllAnswersController);
 router.get("/filterQuestions", questionController.filterByTagsController);
 router.get("/sortQuestions", questionController.sortQuestionsController);
 router.get("/getSubplacesFeed", subplaceController.subplacesFeedController);

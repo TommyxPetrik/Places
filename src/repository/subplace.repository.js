@@ -101,6 +101,7 @@ const updateModerators = async (userid, subplaceid) => {
       .populate("creator", "name")
       .populate("moderators", "name")
       .populate("questions", "title");
+    await userRepository.updateModerating(userid, subplaceid);
     return moderators;
   } catch (error) {
     throw new Error("Chyba pri aktualizovaní moderatórov " + error.message);
@@ -122,6 +123,7 @@ const deletemoderator = async (userid, subplaceid) => {
       .populate("creator", "name")
       .populate("moderators", "name")
       .populate("questions", "title");
+    await userRepository.RemoveModerating(userid, subplaceid);
     return moderators;
   } catch (error) {
     throw new Error("Chyba pri aktualizovaní moderátorov " + error.message);
@@ -245,7 +247,6 @@ const getAllQuestions = async (subplaceid) => {
 const checkIfUserIsCreator = async (userid, subplaceid) => {
   try {
     const subplace = await subplaceModel.findById(subplaceid);
-    console.log(subplace);
 
     if (!subplace) {
       throw new Error("Subplace neexistuje");

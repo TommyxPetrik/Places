@@ -81,11 +81,6 @@ const updateSubplace = async (req, res) => {
 const deleteSubplaceById = async (req, res) => {
   try {
     const subplace = await subplaceRepository.deleteSubplace(req.params.id);
-    const place = await placeRepository.getPlace();
-    if (!place) {
-      return res.status(404).json({ message: "Place not found" });
-    }
-    await placeRepository.deleteSubplaces(subplace._id);
     if (!subplace) {
       return res.status(404).json({ message: "Subplace not found" });
     }
@@ -129,6 +124,10 @@ const leaveSubplace = async (req, res) => {
       req.user.userid,
       req.params.subplaceId
     );
+    await userRepository.RemoveModerating(
+      req.user.userid,
+      req.params.subplaceId
+    );
     res.status(200).json("Používateľ bol úspešne vymazaný");
   } catch (error) {
     res
@@ -140,7 +139,7 @@ const leaveSubplace = async (req, res) => {
 const updateModerators = async (req, res) => {
   try {
     const subplace = await subplaceRepository.updateModerators(
-      req.body.userid,
+      req.body.userId,
       req.body.subplaceId
     );
     if (!subplace) {
@@ -155,7 +154,7 @@ const updateModerators = async (req, res) => {
 const deleteModerator = async (req, res) => {
   try {
     const subplace = await subplaceRepository.deletemoderator(
-      req.body.userid,
+      req.body.userId,
       req.body.subplaceId
     );
     if (!subplace) {

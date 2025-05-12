@@ -19,6 +19,7 @@ router.delete(
   userController.deleteProfilePictureController
 );
 router.put("/changePasword", userController.changePassword);
+router.put("/changeUsername/:id", userController.changeUsernameController);
 router.get("/:id", userController.getUserController);
 router.put("/update/:id", userController.updateUserController);
 router.delete("/:id", userController.deleteUserController);

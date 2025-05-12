@@ -1,5 +1,7 @@
 const userModel = require("../models/user.model");
 const crypto = require("crypto");
+const questionModel = require("../models/question.model");
+const answerModel = require("../models/answer.model");
 
 const getAllUsers = async () => {
   try {
@@ -14,10 +16,22 @@ const getAllUsers = async () => {
 
 const getUserById = async (id) => {
   try {
-    const user = await userModel.findById(id).populate("subplaces", "name");
+    const user = await userModel
+      .findById(id)
+      .populate("subplaces", "name")
+      .populate("moderator", "name");
     return user;
   } catch (error) {
     throw new Error("Chyba pri získavaní užívateľa: " + error.message);
+  }
+};
+
+const deleteUser = async (id) => {
+  try {
+    const user = await userModel.findByIdAndDelete(id);
+    return user;
+  } catch (error) {
+    throw new Error("Chyba pri mazani užívateľa: " + error.message);
   }
 };
 
@@ -49,7 +63,6 @@ const getUserByEmail = async (email) => {
 const createUser = async (userData) => {
   try {
     const user = new userModel(userData);
-    console.log(user);
 
     await user.save();
     return user;
@@ -64,6 +77,39 @@ const updateUser = async (id, userData) => {
     return user;
   } catch (error) {
     throw new Error("Chyba pri aktualizácii užívateľa: " + error.message);
+  }
+};
+
+const changeUsername = async (id, newUsername) => {
+  try {
+    const user = await getUserById(id);
+    if (!user) throw new Error("User not found");
+
+    const oldUsername = user.name;
+
+    const updatedQuestions = await questionModel.updateMany(
+      { username: oldUsername },
+      { $set: { username: newUsername } }
+    );
+
+    const updatedAnswers = await answerModel.updateMany(
+      { username: oldUsername },
+      { $set: { username: newUsername } }
+    );
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      id,
+      { name: newUsername },
+      { new: true }
+    );
+
+    return {
+      user: updatedUser,
+      updatedQuestions,
+      updatedAnswers,
+    };
+  } catch (error) {
+    throw new Error("Error updating username: " + error.message);
   }
 };
 
@@ -295,6 +341,32 @@ const getJoinedSubplacesId = async (userid) => {
   }
 };
 
+const updateModerating = async (userId, subplaceId) => {
+  try {
+    const user = await userModel.findByIdAndUpdate(
+      userId,
+      { $addToSet: { moderator: subplaceId } },
+      { new: true }
+    );
+    return user;
+  } catch (error) {
+    throw new Error("Chyba pri updatovaní používateľa: " + error.message);
+  }
+};
+
+const RemoveModerating = async (userId, subplaceId) => {
+  try {
+    const user = await userModel.findByIdAndUpdate(
+      userId,
+      { $pull: { moderator: subplaceId } },
+      { new: true }
+    );
+    return user;
+  } catch (error) {
+    throw new Error("Chyba pri updatovaní používateľa: " + error.message);
+  }
+};
+
 module.exports = {
   getUserById,
   getUserByUsername,
@@ -314,4 +386,8 @@ module.exports = {
   getJoinedSubplacesId,
   updateUserProfilePicture,
   deleteUserProfilePicture,
+  changeUsername,
+  deleteUser,
+  updateModerating,
+  RemoveModerating,
 };

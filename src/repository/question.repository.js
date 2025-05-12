@@ -68,7 +68,7 @@ const updateQuestion = async (id, questionData) => {
         new: true,
       })
       .populate("userid", "name")
-      .populate("subplace", "name");
+      .populate("subplace");
     return question;
   } catch (error) {
     throw new Error("Chyba pri aktualizácii otázky: " + error.message);

@@ -39,6 +39,7 @@ const userSchema = new Schema({
     type: String,
     default: "",
   },
+  moderator: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subplace" }],
 });
 
 userSchema.pre("save", function (next) {
